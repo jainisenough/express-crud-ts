@@ -14,6 +14,3 @@ npm start
 
 # For Dev Start Server
 npm run start:dev
-
-# For QA Start Server
-npm run start:qa
