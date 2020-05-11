@@ -1,6 +1,6 @@
 # Pre Request
 MongoDb v 4.2.x
-Node Js v 14.x
+Node Js v 12.x+
 NVM (Optional)
 
 # For Build
