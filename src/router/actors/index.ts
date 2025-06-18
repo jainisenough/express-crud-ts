@@ -48,7 +48,7 @@ const route: Routes[] = [
       },
     },
     handler: async (req: Request, res: Response) => {
-      const resp = await actorController.updateById(req.params.id, req.body);
+      const resp = await actorController.updateById(parseInt(req.params.id), req.body);
       res.json({
         message: "OK",
         statusCode: 200,
