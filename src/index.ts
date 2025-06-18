@@ -21,8 +21,10 @@ import router from "./router";
   app.use(helmet());
   app.use(bodyParser.json());
 
-  const expressRouter = await router();
-  app.use("/", expressRouter);
+  const expressRouters = await router();
+  expressRouters.forEach(({path, routes}) => {
+    app.use(`/${path}`, routes);
+  });
   app.get("/", (req: Request, res: Response) => {
     res.send("Hello World!");
   });

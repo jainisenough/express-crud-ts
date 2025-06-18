@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "joi";
 import categoryController from "../../controller/category";
-import { Routes } from "..";
+import createRouter, { Routes } from "../../utils/createRouter";
 
 const route: Routes[] = [
   {
@@ -72,4 +72,7 @@ const route: Routes[] = [
   },
 ];
 
-export default route;
+export default {
+  path: 'category',
+  routes: createRouter(route)
+};

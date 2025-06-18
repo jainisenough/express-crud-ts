@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "joi";
 import actorController from "../../controller/actors";
-import { Routes } from "..";
+import createRouter, { Routes } from "../../utils/createRouter";
 
 const route: Routes[] = [
   {
     method: "get",
     path: "/",
-    role: 'admin',
+    role: "admin",
     handler: async (_req: Request, res: Response, _next: NextFunction) => {
       const resp = await actorController.get();
       res.json({
@@ -48,7 +48,10 @@ const route: Routes[] = [
       },
     },
     handler: async (req: Request, res: Response) => {
-      const resp = await actorController.updateById(parseInt(req.params.id), req.body);
+      const resp = await actorController.updateById(
+        parseInt(req.params.id),
+        req.body
+      );
       res.json({
         message: "OK",
         statusCode: 200,
@@ -75,4 +78,7 @@ const route: Routes[] = [
   },
 ];
 
-export default route;
+export default {
+  path: 'actors',
+  routes: createRouter(route)
+};

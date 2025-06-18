@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "joi";
 import filmController from "../../controller/film";
-import { Routes } from "..";
+import createRouter, { Routes } from "../../utils/createRouter";
 
 const route: Routes[] = [
   {
@@ -86,4 +86,7 @@ const route: Routes[] = [
   },
 ];
 
-export default route;
+export default{
+  path: 'film',
+  routes: createRouter(route)
+};
