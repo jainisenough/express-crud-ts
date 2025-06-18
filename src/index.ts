@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import helmet from "helmet";
-import { Boom } from "@hapi/boom";
+import { Boom, boomify, isBoom } from "@hapi/boom";
 import sqlite from "./utils/sqlite";
 import DB from "./utils/db";
 import logger from "./utils/logger";
@@ -31,10 +31,15 @@ import router from "./router";
     logger.info(`App listening on port ${process.env.PORT}`);
   });
 
-  app.use((err: Boom, _req: Request, res: Response, _next: NextFunction) => {
+  app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+    let errInfo = err as Boom;
+    if (!isBoom(err)) {
+      errInfo = boomify(err, { statusCode: 500 });
+    }
+
     const {
       output: { statusCode = 500, payload = {} },
-    } = err;
+    } = errInfo;
     res.status(statusCode).json(payload);
   });
 

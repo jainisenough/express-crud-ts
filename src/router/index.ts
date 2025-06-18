@@ -7,6 +7,7 @@ import { createValidator, ExpressJoiInstance } from "express-joi-validation";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
 import logger from "../utils/logger";
+import authorize from "../utils/authorization";
 
 type ValidatorObject = {
   [key in keyof ExpressJoiInstance]?: any;
@@ -16,6 +17,7 @@ export type Routes = {
   path: string;
   method: "get" | "post" | "delete" | "put" | "patch";
   validators?: ValidatorObject;
+  role?: 'admin' | 'user';
   handler: (req: Request, res: Response, next: NextFunction) => Promise<void> | void;
 };
 
@@ -44,8 +46,8 @@ const router = async () => {
     })
   );
 
-  routerData.flat().forEach(({ method, path, handler, validators }: Routes) => {
-    let validationArgs: RequestHandler<
+  routerData.flat().forEach(({ method, path, handler, validators, role }: Routes) => {
+    let middlewareArgs: RequestHandler<
       ParamsDictionary,
       any,
       any,
@@ -58,11 +60,15 @@ const router = async () => {
         keyof ExpressJoiInstance,
         ObjectSchema<any>
       ][];
-      validationArgs = validations.map(([validate, validationSchema]) =>
+      middlewareArgs = validations.map(([validate, validationSchema]) =>
         validator[validate](Joi.object(validationSchema))
       );
     }
-    expressRouter[method](path, ...validationArgs, handler);
+    
+    if(role) {
+      middlewareArgs.push((...args) => authorize(...args, role));
+    }
+    expressRouter[method](path, ...middlewareArgs, handler);
   });
 
   return expressRouter;

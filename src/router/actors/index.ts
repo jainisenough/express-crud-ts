@@ -7,6 +7,7 @@ const route: Routes[] = [
   {
     method: "get",
     path: "/",
+    role: 'admin',
     handler: async (_req: Request, res: Response, _next: NextFunction) => {
       const resp = await actorController.get();
       res.json({
